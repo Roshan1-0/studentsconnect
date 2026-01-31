@@ -1,268 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GameVerse | Level Up Your Play</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameVerse | Neon Racer</title>
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      --bg-primary: #020617;
-      --bg-secondary: #0f172a;
-      --card-bg: #020617;
-      --accent: #22d3ee;
-      --accent-glow: rgba(34, 211, 238, 0.5);
-      --text-primary: #e5e7eb;
-      --text-muted: #94a3b8;
-      --border: #1e293b;
-    }
+<style>
+:root {
+  --bg: #020617;
+  --road: #0f172a;
+  --accent: #22d3ee;
+  --danger: #ef4444;
+  --text: #e5e7eb;
+}
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+* { box-sizing: border-box; }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: radial-gradient(circle at top, #020617, #000);
-      color: var(--text-primary);
-      min-height: 100vh;
-    }
+body {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  background: radial-gradient(circle at top, #020617, #000);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    /* NAVBAR */
-    header {
-      padding: 1.2rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
+/* GAME CONTAINER */
+.game-wrapper {
+  text-align: center;
+}
 
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.4rem;
-      color: var(--accent);
-      letter-spacing: 0.08em;
-    }
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 15px rgba(34,211,238,0.6);
+}
 
-    nav a {
-      margin-left: 1.5rem;
-      text-decoration: none;
-      color: var(--text-muted);
-      font-weight: 500;
-      transition: color 0.3s;
-    }
+.score {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #94a3b8;
+}
 
-    nav a:hover {
-      color: var(--accent);
-    }
+/* ROAD */
+.road {
+  width: 300px;
+  height: 500px;
+  background: linear-gradient(#020617, var(--road));
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 25px rgba(34,211,238,0.3);
+}
 
-    /* HERO */
-    .hero {
-      text-align: center;
-      padding: 5rem 2rem 4rem;
-      max-width: 900px;
-      margin: auto;
-    }
+/* LANE LINES */
+.line {
+  position: absolute;
+  width: 6px;
+  height: 40px;
+  background: #334155;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: moveLine 1s linear infinite;
+}
 
-    .badge {
-      display: inline-block;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 0.4rem 0.9rem;
-      border-radius: 999px;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 0 12px var(--accent-glow);
-    }
+@keyframes moveLine {
+  from { top: -40px; }
+  to { top: 520px; }
+}
 
-    h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(2.2rem, 6vw, 3.2rem);
-      margin-bottom: 1rem;
-    }
+/* PLAYER CAR */
+.player {
+  width: 40px;
+  height: 70px;
+  background: var(--accent);
+  position: absolute;
+  bottom: 20px;
+  left: 130px;
+  border-radius: 6px;
+  box-shadow: 0 0 15px rgba(34,211,238,0.8);
+}
 
-    h1 span {
-      color: var(--accent);
-      text-shadow: 0 0 18px var(--accent-glow);
-    }
+/* ENEMY */
+.enemy {
+  width: 40px;
+  height: 70px;
+  background: var(--danger);
+  position: absolute;
+  top: -100px;
+  border-radius: 6px;
+  box-shadow: 0 0 15px rgba(239,68,68,0.8);
+}
 
-    .hero p {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      max-width: 650px;
-      margin: auto;
-    }
+/* GAME OVER */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(2,6,23,0.9);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
-    .cta {
-      margin-top: 2.5rem;
-      display: flex;
-      justify-content: center;
-      gap: 1.2rem;
-      flex-wrap: wrap;
-    }
+.overlay h2 {
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 1rem;
+}
 
-    .btn {
-      padding: 0.8rem 1.8rem;
-      border-radius: 8px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #020617;
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 0 30px var(--accent-glow);
-    }
-
-    .btn-outline {
-      border: 1px solid var(--accent);
-      color: var(--accent);
-    }
-
-    .btn-outline:hover {
-      background: var(--accent);
-      color: #020617;
-    }
-
-    /* GAMES SECTION */
-    .games {
-      padding: 4rem 2rem;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    .section-title {
-      font-family: 'Orbitron', sans-serif;
-      text-align: center;
-      margin-bottom: 2.5rem;
-      font-size: 1.8rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.8rem;
-    }
-
-    .card {
-      background: linear-gradient(180deg, var(--bg-secondary), var(--card-bg));
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.8rem;
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top, rgba(34,211,238,0.15), transparent 60%);
-      opacity: 0;
-      transition: opacity 0.4s;
-    }
-
-    .card:hover::before {
-      opacity: 1;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 0 25px rgba(34, 211, 238, 0.25);
-    }
-
-    .card h3 {
-      font-family: 'Orbitron', sans-serif;
-      margin-bottom: 0.6rem;
-      color: var(--accent);
-    }
-
-    .card p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-  </style>
+.overlay button {
+  padding: 0.6rem 1.4rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+</style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <header>
-    <div class="logo">GAMEVERSE</div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Games</a>
-      <a href="#">Community</a>
-      <a href="#">Contact</a>
-    </nav>
-  </header>
+<div class="game-wrapper">
+  <h1>Neon Racer</h1>
+  <div class="score">Score: <span id="score">0</span></div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <span class="badge">Next-Gen Gaming</span>
-    <h1>Enter the <span>Ultimate Gaming Arena</span></h1>
-    <p>
-      Discover competitive multiplayer games, immersive worlds, and epic battles.
-      Built for gamers. Powered by passion.
-    </p>
+  <div class="road" id="road">
+    <div class="line"></div>
+    <div class="player" id="player"></div>
 
-    <div class="cta">
-      <a href="#" class="btn btn-primary">Play Now</a>
-      <a href="#" class="btn btn-outline">Explore Games</a>
+    <div class="overlay" id="gameOver">
+      <h2>Game Over</h2>
+      <button onclick="restart()">Restart</button>
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- GAMES -->
-  <section class="games">
-    <h2 class="section-title">Featured Games</h2>
+<script>
+const road = document.getElementById("road");
+const player = document.getElementById("player");
+const scoreEl = document.getElementById("score");
+const gameOverScreen = document.getElementById("gameOver");
 
-    <div class="grid">
-      <div class="card">
-        <h3>Cyber Strike</h3>
-        <p>Fast-paced FPS action in a neon cyberpunk battlefield.</p>
-      </div>
+let playerX = 130;
+let score = 0;
+let speed = 4;
+let gameRunning = true;
 
-      <div class="card">
-        <h3>Shadow Realm</h3>
-        <p>Dark fantasy RPG with intense boss fights and deep lore.</p>
-      </div>
+/* MOVE PLAYER */
+document.addEventListener("keydown", e => {
+  if (!gameRunning) return;
 
-      <div class="card">
-        <h3>Velocity X</h3>
-        <p>High-speed racing with futuristic tracks and vehicles.</p>
-      </div>
-    </div>
-  </section>
+  if (e.key === "ArrowLeft" && playerX > 10) {
+    playerX -= 20;
+  }
+  if (e.key === "ArrowRight" && playerX < 250) {
+    playerX += 20;
+  }
+  player.style.left = playerX + "px";
+});
 
-  <!-- FOOTER -->
-  <footer>
-    © 2026 GameVerse. Built by gamers, for gamers.
-  </footer>
+/* CREATE ENEMY */
+function createEnemy() {
+  if (!gameRunning) return;
+
+  const enemy = document.createElement("div");
+  enemy.classList.add("enemy");
+  enemy.style.left = Math.floor(Math.random() * 240 + 10) + "px";
+  road.appendChild(enemy);
+
+  let enemyY = -100;
+
+  const moveEnemy = setInterval(() => {
+    if (!gameRunning) {
+      clearInterval(moveEnemy);
+      enemy.remove();
+      return;
+    }
+
+    enemyY += speed;
+    enemy.style.top = enemyY + "px";
+
+    // COLLISION
+    const playerRect = player.getBoundingClientRect();
+    const enemyRect = enemy.getBoundingClientRect();
+
+    if (
+      playerRect.left < enemyRect.right &&
+      playerRect.right > enemyRect.left &&
+      playerRect.top < enemyRect.bottom &&
+      playerRect.bottom > enemyRect.top
+    ) {
+      endGame();
+      clearInterval(moveEnemy);
+    }
+
+    if (enemyY > 550) {
+      enemy.remove();
+      clearInterval(moveEnemy);
+      score++;
+      scoreEl.textContent = score;
+    }
+  }, 20);
+}
+
+/* GAME LOOP */
+setInterval(() => {
+  if (gameRunning) createEnemy();
+}, 1200);
+
+/* END GAME */
+function endGame() {
+  gameRunning = false;
+  gameOverScreen.style.display = "flex";
+}
+
+/* RESTART */
+function restart() {
+  location.reload();
+}
+</script>
 
 </body>
 </html>
+
